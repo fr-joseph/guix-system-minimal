@@ -2,10 +2,12 @@
 
 (define-module (system)
   #:use-module (gnu)
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd)
   )
 
 (use-service-modules networking ssh)
-(use-package-modules ssh)
+(use-package-modules ssh tmux vim)
 
 (operating-system
 
@@ -50,7 +52,7 @@
 	       (supplementary-groups '("audio" "lp" "netdev" "video" "wheel")))
 	      %base-user-accounts))
 
- (packages (cons* tmux vim %base-packages))
+ (packages (cons* tmux neovim %base-packages))
 
  (services (append (list
 		    (service dhcp-client-service-type)
