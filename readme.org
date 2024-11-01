@@ -1,0 +1,24 @@
+* validating system.scm
+
+#+begin_src sh
+
+  cd guix-system-minimal
+  guix repl -L .
+  ,use (system)
+
+#+end_src
+
+* examining %base-packages
+
+#+begin_src sh
+
+  cd guix-system-minimal
+  guix repl -L .
+  ,use (util)
+  (show-base-packages)
+
+#+end_src
+
+
+
+
