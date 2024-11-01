@@ -22,7 +22,8 @@ elif [ "$1" = "2" ]; then
     cryptsetup -v --use-random luksFormat --type luks2 --pbkdf pbkdf2 /dev/nvme0n1p2
     cryptsetup open /dev/nvme0n1p2 main
     note "now verify luks is set up correctly"
-    note "then edit 'system.scm' and fill in the UUID from 'cryptsetup luksUUID /dev/nvme0n1p2'"
+    note "then edit 'system.scm' and fill in the UUID below:"
+    cryptsetup luksUUID /dev/nvme0n1p2
     note "and then continue with './install.sh 3'"
 elif [ "$1" = "3" ]; then
     note "main partition"
