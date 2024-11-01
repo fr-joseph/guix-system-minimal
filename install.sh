@@ -8,6 +8,7 @@ note () {
 
 if [ $# -ne 1 ]; then
     note "ERROR: Must provide phase number to run."
+    exit 1
 fi
 
 cd
@@ -47,7 +48,8 @@ elif [ "$1" = "4" ]; then
     guix system \
       --substitute-urls='https://ci.guix.gnu.org https://bordeaux.guix.gnu.org https://substitutes.nonguix.org' \
       --cores=0 \
-      init /mnt/etc/system.scm /mnt \
+      init /mnt/etc/system.scm /mnt
 else
     note "ERROR: Invalid phase number."
+    exit 1
 fi
