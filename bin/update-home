@@ -1,0 +1,14 @@
+#!/bin/sh
+
+SUBS='https://ci.guix.gnu.org https://bordeaux.guix.gnu.org https://substitutes.nonguix.org'
+CFG="$HOME/.config/guix/home.scm"
+
+if [ -e "$CFG" ]; then
+    guix home \
+         --substitute-urls="$SUBS" \
+         --cores=0 \
+         reconfigure "$CFG"
+else
+    echo "ERROR: first create home config file $CFG"
+    exit 1
+fi

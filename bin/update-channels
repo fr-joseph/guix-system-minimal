@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ROOT="$HOME/.config/guix"
+BASE="$ROOT/base-channels.scm"
+
+if [ -e "$BASE" ]; then
+    guix pull --channels="$BASE" --allow-downgrades
+    guix describe --format=channels > "$ROOT/channels.scm"
+else
+    echo "ERROR: first copy base channel config to $BASE"
+    exit 1
+fi

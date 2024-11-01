@@ -1,0 +1,14 @@
+#!/bin/sh
+
+SUBS='https://ci.guix.gnu.org https://bordeaux.guix.gnu.org https://substitutes.nonguix.org'
+CFG="/home/$USER/.config/guix/system.scm"
+
+if [ -e "$CFG" ]; then
+    sudo guix system \
+         --substitute-urls="$SUBS" \
+         --cores=0 \
+         reconfigure "$CFG"
+else
+    echo "ERROR: first copy base channel config to $BASE"
+    exit 1
+fi

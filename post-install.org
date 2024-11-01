@@ -1,0 +1,47 @@
+* reminder from the guix manual
+
+** 3.7 After System Installation
+
+you can update the system whenever you want by running, say:
+
+#+begin_src shell
+
+guix pull
+sudo guix system reconfigure /etc/config.scm
+
+#+end_src
+
+This builds a new system generation with the latest packages and
+services.. We recommend doing that regularly so that your system
+includes the latest security updates.
+
+Note: Note that =sudo guix= runs your user’s guix command and not
+root’s, because sudo leaves PATH unchanged. To explicitly run root’s
+guix, type =sudo -i guix …=.
+
+The difference matters here, because =guix pull= updates the guix
+command and package definitions =only for the user it is run as=. This
+means that if you choose to use guix system reconfigure in root’s
+login shell, you’ll need to guix pull separately.
+
+* post install steps
+
+** from user login shell
+
+#+begin_src shell
+
+# update root's guix (run this once in a while)
+# include nonguix channel
+sudo -i guix pull --channels="./base-channels.scm" --allow-downgrades
+
+# include nonguix channel
+guix pull --channels="./base-channels.scm" --allow-downgrades
+
+# include nonguix subs
+SUBS='https://ci.guix.gnu.org https://bordeaux.guix.gnu.org https://substitutes.nonguix.org'
+sudo guix system \
+     --substitute-urls="$SUBS" \
+     --cores=0 \
+     reconfigure "/etc/system.scm"
+
+#+end_src
