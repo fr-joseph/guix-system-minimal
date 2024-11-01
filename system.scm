@@ -7,7 +7,7 @@
   )
 
 (use-service-modules networking ssh)
-(use-package-modules ssh tmux vim)
+(use-package-modules ssh tmux version-control vim)
 
 (operating-system
 
@@ -52,7 +52,7 @@
 	       (supplementary-groups '("audio" "lp" "netdev" "video" "wheel")))
 	      %base-user-accounts))
 
- (packages (cons* tmux neovim %base-packages))
+ (packages (cons* git tmux neovim %base-packages))
 
  (services (append (list
 		    (service dhcp-client-service-type)
