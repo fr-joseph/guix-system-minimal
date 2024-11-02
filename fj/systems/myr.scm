@@ -39,4 +39,8 @@
                 (supplementary-groups '("audio" "lp" "netdev" "video" "wheel")))
                %base-user-accounts))
 
+    (sudoers-file (plain-file "sudoers" "\
+root ALL=(ALL) ALL
+%wheel ALL=(ALL) NOPASSWD: ALL\n"))
+
   )
