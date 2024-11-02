@@ -1,10 +1,13 @@
 #!/bin/sh
 
 SUBS='https://ci.guix.gnu.org https://bordeaux.guix.gnu.org https://substitutes.nonguix.org'
-CFG="/home/$USER/.config/guix/system.scm"
+# CFG="/home/$USER/.config/guix/system.scm"
+ROOT="/home/$USER/src/guix-system-minimal"
+CFG="$ROOT/fj/systems/${HOSTNAME}.scm"
 
 if [ -e "$CFG" ]; then
     sudo guix system \
+	 -L "$ROOT" \
          --substitute-urls="$SUBS" \
          --cores=0 \
          reconfigure "$CFG"

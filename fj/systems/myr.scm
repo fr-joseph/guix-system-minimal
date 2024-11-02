@@ -1,6 +1,7 @@
 (define-module (fj systems myr)
   #:use-module (gnu)
   #:use-module (guix)
+  #:use-module (guix channels)
   #:use-module (fj systems base-system))
 
 (operating-system
@@ -14,7 +15,7 @@
   ;; cryptsetup luksUUID /dev/nvme0n1p2
   (mapped-devices
    (list (mapped-device
-          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+          (source (uuid "0943eb64-ac84-44a4-8915-aa90e49dc1e2"))
           (target "main")
           (type luks-device-mapping))))
 
