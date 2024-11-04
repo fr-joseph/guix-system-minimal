@@ -1,15 +1,12 @@
 (define-module (fj systems myr)
   #:use-module (gnu)
   #:use-module (guix)
-  #:use-module (fj systems base-system))
+  #:use-module (fj systems base))
 
-(operating-system
-  (inherit base-system)
+(my-system
+ #:system
+ (operating-system
   (host-name "myr")
-
-  (bootloader (bootloader-configuration
-               (bootloader grub-efi-bootloader)
-               (targets '("/boot/efi"))))
 
   ;; cryptsetup luksUUID /dev/nvme0n1p2
   (mapped-devices
@@ -20,27 +17,30 @@
 
   (file-systems (cons*
                  (file-system
-                   (device (file-system-label "BOOT"))
-                   (mount-point "/boot/efi")
-                   (type "vfat"))
+                  (device (file-system-label "BOOT"))
+                  (mount-point "/boot/efi")
+                  (type "vfat"))
                  (file-system
-                   (device (file-system-label "main"))
-                   (dependencies mapped-devices)
-                   (mount-point "/")
-                   (type "ext4")
-                   )
+                  (device (file-system-label "main"))
+                  (dependencies mapped-devices)
+                  (mount-point "/")
+                  (type "ext4")
+                  )
                  %base-file-systems))
+  )
 
-    (users (cons (user-account
-                (name "fj")
-                (comment "fj")
-                (group "users")
-                (home-directory "/home/fj")
-                (supplementary-groups '("audio" "lp" "netdev" "video" "wheel")))
-               %base-user-accounts))
-
-    (sudoers-file (plain-file "sudoers" "\
-root ALL=(ALL) ALL
-%wheel ALL=(ALL) NOPASSWD: ALL\n"))
+ #:home
+ (home-environment
+  (packages (list))
+  (services (list))
+  ;; (services (cons* (service home-pipewire-service-type)
+  ;;                  (service home-video-service-type)
+  ;;                  (service home-audio-service-type)
+  ;;                  (service home-finance-service-type)
+  ;;                  (service home-streaming-service-type)
+  ;;                  (service home-games-service-type)
+  ;;                  common-home-services))
 
   )
+
+ )
