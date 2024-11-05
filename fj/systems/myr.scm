@@ -1,10 +1,16 @@
 (define-module (fj systems myr)
   #:use-module (gnu)
   #:use-module (guix)
-  #:use-module (fj systems base))
+  #:use-module (fj systems base)
+  #:use-module (fj home-services core)
+  #:use-module (fj home-services desktop)
+  #:use-module (fj home-services emacs)
+  #:use-module (fj home-services pipewire)
+  )
 
 (my-system
- #:system
+ #:%username "fj"
+ #:%system
  (operating-system
   (host-name "myr")
 
@@ -29,18 +35,13 @@
                  %base-file-systems))
   )
 
- #:home
+ #:%home
  (home-environment
   (packages (list))
-  (services (list))
-  ;; (services (cons* (service home-pipewire-service-type)
-  ;;                  (service home-video-service-type)
-  ;;                  (service home-audio-service-type)
-  ;;                  (service home-finance-service-type)
-  ;;                  (service home-streaming-service-type)
-  ;;                  (service home-games-service-type)
-  ;;                  common-home-services))
+  (services (cons*
+             (service my-home-desktop-service-type)
+             (service my-home-emacs-config-service-type)
+             (service my-home-pipewire-service-type)
+             my-core-home-services))
 
-  )
-
- )
+  ))
