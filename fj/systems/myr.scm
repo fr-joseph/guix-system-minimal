@@ -2,15 +2,18 @@
   #:use-module (gnu)
   #:use-module (guix)
   #:use-module (guix channels)
-  #:use-module (fj systems base-system))
+  #:use-module (fj systems base)
+  #:use-module (fj home-services core)
+  #:use-module (fj home-services desktop)
+  #:use-module (fj home-services emacs)
+  #:use-module (fj home-services pipewire)
+  )
 
-(operating-system
-  (inherit base-system)
+(my-system
+ #:%username "fj"
+ #:%system
+ (operating-system
   (host-name "myr")
-
-  (bootloader (bootloader-configuration
-               (bootloader grub-efi-bootloader)
-               (targets '("/boot/efi"))))
 
   ;; cryptsetup luksUUID /dev/nvme0n1p2
   (mapped-devices
@@ -21,27 +24,25 @@
 
   (file-systems (cons*
                  (file-system
-                   (device (file-system-label "BOOT"))
-                   (mount-point "/boot/efi")
-                   (type "vfat"))
+                  (device (file-system-label "BOOT"))
+                  (mount-point "/boot/efi")
+                  (type "vfat"))
                  (file-system
-                   (device (file-system-label "main"))
-                   (dependencies mapped-devices)
-                   (mount-point "/")
-                   (type "ext4")
-                   )
+                  (device (file-system-label "main"))
+                  (dependencies mapped-devices)
+                  (mount-point "/")
+                  (type "ext4")
+                  )
                  %base-file-systems))
-
-    (users (cons (user-account
-                (name "fj")
-                (comment "fj")
-                (group "users")
-                (home-directory "/home/fj")
-                (supplementary-groups '("audio" "lp" "netdev" "video" "wheel")))
-               %base-user-accounts))
-
-    (sudoers-file (plain-file "sudoers" "\
-root ALL=(ALL) ALL
-%wheel ALL=(ALL) NOPASSWD: ALL\n"))
-
   )
+
+ #:%home
+ (home-environment
+  (packages (list))
+  (services (cons*
+             (service my-home-desktop-service-type)
+             (service my-home-emacs-config-service-type)
+             (service my-home-pipewire-service-type)
+             my-core-home-services))
+
+  ))
