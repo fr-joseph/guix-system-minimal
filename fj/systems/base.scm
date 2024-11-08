@@ -1,15 +1,16 @@
 (define-module (fj systems base)
   #:use-module (gnu)
+  #:use-module (gnu system)
   #:use-module (guix)
   #:use-module (guix channels)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
-	#:use-module (srfi srfi-1) ; for `delete'
+  #:use-module ((srfi srfi-1) #:select ((delete . drop)))
   #:export (my-system)
   )
 
-(use-service-modules networking ssh)
-(use-package-modules package-management ssh tmux version-control)
+(use-service-modules guix networking ssh)
+(use-package-modules compression curl emacs linux nvi package-management rust-apps search shellutils ssh text-editors tmux version-control)
 
   ;; Channels that should be available to /run/current-system/profile/bin/guix
 (define %my-channels
@@ -27,11 +28,11 @@
 
 ;; remove wireless, and editors that I don't use
 (define %my-base-packages
-  (delete nano ; no, ty
-  (delete nvi ; vi clone
-  (delete mg ; mini-emacs
-  (delete iw ; wireless tools
-  (delete wireless-tools ; deprecated wireless tools
+  (drop nano ; no, ty
+  (drop nvi ; vi clone
+  (drop mg ; mini-emacs
+  (drop iw ; wireless tools
+  (drop wireless-tools ; deprecated wireless tools
           %base-packages))))))
 
 (define %my-packages
@@ -90,10 +91,6 @@
    (timezone "America/Denver")
    (locale "en_US.utf8")
 
-   (bootloader (bootloader-configuration
-                (bootloader grub-efi-bootloader)
-                (targets '("/boot/efi"))))
-
    (users (cons (user-account
                  (name %username)
                  (comment %username)
@@ -110,7 +107,7 @@ root ALL=(ALL) ALL
    (packages %my-packages)
 
    (services (append
-              (operating-system-user-services %system)
+              ;;(operating-system-user-services %system)
               (list (service guix-home-service-type `((,%username ,%home))))
               %my-services
               (modify-services %base-services

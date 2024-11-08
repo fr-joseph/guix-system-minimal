@@ -39,12 +39,12 @@
         ;; adwaita-icon-theme
 
         ;; font
-			  font-awesome ; full suite of pictographic icons for easy SVG
-			  font-fira-code
-			  font-google-noto ; unicode support
-			  font-google-noto-emoji ; emoji support
-			  font-liberation ; basic fonts
-			  fontconfig ; fc-cache, fc-list
+        font-awesome ; full suite of pictographic icons for easy SVG
+        font-fira-code
+        font-google-noto ; unicode support
+        font-google-noto-emoji ; emoji support
+        font-liberation ; basic fonts
+        fontconfig ; fc-cache, fc-list
 
         ;; audio/media
         alsa-utils

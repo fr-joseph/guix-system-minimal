@@ -1,14 +1,12 @@
 (define-module (fj systems myr)
   #:use-module (gnu)
-  #:use-module (guix)
-  #:use-module (guix channels)
+  #:use-module (gnu home)
   #:use-module (fj systems base)
   #:use-module (fj home-services core)
-  #:use-module (fj home-services desktop)
-  #:use-module (fj home-services emacs)
-  #:use-module (fj home-services pipewire)
+  #:export (myr-os)
   )
 
+(define myr-os
 (my-system
  #:%username "fj"
  #:%system
@@ -21,6 +19,10 @@
           (source (uuid "0943eb64-ac84-44a4-8915-aa90e49dc1e2"))
           (target "main")
           (type luks-device-mapping))))
+
+  (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (targets '("/boot/efi"))))
 
   (file-systems (cons*
                  (file-system
@@ -39,10 +41,7 @@
  #:%home
  (home-environment
   (packages (list))
-  (services (cons*
-             (service my-home-desktop-service-type)
-             (service my-home-emacs-config-service-type)
-             (service my-home-pipewire-service-type)
-             my-core-home-services))
+  (services my-core-home-services)
+  )))
 
-  ))
+myr-os
