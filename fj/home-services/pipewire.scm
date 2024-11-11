@@ -9,9 +9,8 @@
   #:export (my-home-pipewire-service-type))
 
 (define (my-home-pipewire-profile-service config)
-  (map specification->package
-       (list "pipewire"
-             "wireplumber")))
+  (list pipewire
+        wireplumber))
 
 (define (my-home-pipewire-shepherd-service config)
   (list

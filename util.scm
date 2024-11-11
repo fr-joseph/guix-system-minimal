@@ -2,7 +2,11 @@
   #:use-module (gnu)
   #:use-module (gnu system)
   #:use-module (guix packages)
+  #:use-module (gnu services)
   )
+
+(use-package-modules libusb linux)
+(use-service-modules base)
 
 ;;(use-modules
  ;;(srfi srfi-1)
@@ -35,3 +39,8 @@
      %base-packages)
     ))
   #t)
+
+(define-public my-udev
+  (simple-service 'my-udev-rules udev-service-type (list libmtp pipewire))
+)
+

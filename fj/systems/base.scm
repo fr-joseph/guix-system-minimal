@@ -9,8 +9,8 @@
   #:export (my-system)
   )
 
-(use-service-modules guix networking ssh)
-(use-package-modules compression curl emacs linux nvi package-management rust-apps search shellutils ssh text-editors tmux version-control)
+(use-service-modules avahi dbus desktop guix networking ssh xorg)
+(use-package-modules compression curl emacs libusb linux nvi package-management rust-apps search shellutils ssh text-editors tmux version-control wm)
 
   ;; Channels that should be available to /run/current-system/profile/bin/guix
 (define %my-channels
@@ -54,8 +54,57 @@
    ;; end
    %my-base-packages))
 
-(define %my-services
+(define %my-desktop-services
   (list
+   ;;; from %desktop-services ---------------------------------------------------------
+   
+   ;; Add udev rules:
+   ;;   for MTP devices so that non-root users can access them.
+   ;;   for pipewire
+   (simple-service 'my-udev-rules udev-service-type (list libmtp pipewire))
+
+   ;; Add polkit rules, so that non-root users in the wheel group can
+   ;; perform administrative tasks (similar to "sudo").
+   polkit-wheel-service
+
+   ;; The global fontconfig cache directory can sometimes contain
+   ;; stale entries, possibly referencing fonts that have been GC'd,
+   ;; so mount it read-only.
+   fontconfig-file-system-service
+
+   ;; network time protocol
+   (service ntp-service-type)
+
+   ;; The D-Bus clique.
+   (service avahi-service-type) ; avahi 'zero conf' toolset
+   (service udisks-service-type) ; UI with notifications for mount/unmount disks
+   (service accountsservice-service-type) ; integrates w/ PolicyKit to allow unprivileged users to modify system config
+   (service cups-pk-helper-service-type) ; polkit helper for cups
+   (service polkit-service-type) ; allow sys admin to grant unpriv user additional capabilities for system config
+   (service elogind-service-type) ; login & seat management
+   (service dbus-root-service-type) ; D-Bus
+   ;;(service upower-service-type) ; battery level monitor
+   ;;(service geoclue-service-type) ; allow app requests for user's physical location
+   ;;(service colord-service-type) ; manage color profiles of IO devices (screens, scanners, etc)   
+
+   ;; Add udev rules for scanners.
+   ;; (service sane-service-type)
+   
+   ;;(service pulseaudio-service-type)
+   ;;(service alsa-service-type)
+   
+   ;;; other --------------------------------------------------------------------------
+   ;; sway lock
+   (service screen-locker-service-type
+            (screen-locker-configuration
+             (name "swaylock")
+             (program (file-append swaylock "/bin/swaylock"))
+             (using-pam? #t)
+             (using-setuid? #f)))
+   ))
+
+(define %my-services
+  (cons*
    (service dhcp-client-service-type)
    (service openssh-service-type
             (openssh-configuration
@@ -65,18 +114,18 @@
     'my-etc-hosts
     hosts-service-type
     (list ;; (host ADDRESS CANONICAL-NAME [ALIASES])
-		 (host "192.168.0.10"  "archive"   '("archive.ds"))
-		 (host "192.168.0.128" "salt"      '())
-		 (host "192.168.0.2"   "baptist"   '("dbsrv.ds"
-							                           "dbsrv.gocamerica.net"
-							                           "baptist.ds"
-							                           "baptist.gocamerica.net"
-							                           "secure.dormitionskete.net"))
-		 (host "192.168.0.5"   "dormition" '("dormition.ds"))
-		 (host "192.168.0.86"  "WD01"      '("WD01.ds"))
-		 (host "74.208.16.226" "ionos"     '("ionos.production"))
+     (host "192.168.0.10"  "archive"   '("archive.ds"))
+     (host "192.168.0.128" "salt"      '())
+     (host "192.168.0.2"   "baptist"   '("dbsrv.ds"
+					 "dbsrv.gocamerica.net"
+					 "baptist.ds"
+					 "baptist.gocamerica.net"
+					 "secure.dormitionskete.net"))
+     (host "192.168.0.5"   "dormition" '("dormition.ds"))
+     (host "192.168.0.86"  "WD01"      '("WD01.ds"))
+     (host "74.208.16.226" "ionos"     '("ionos.production"))
      ))
-   (service ntp-service-type)
+   %my-desktop-services
    ))
 
 (define* (my-system #:key %username %system %home)

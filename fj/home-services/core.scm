@@ -92,7 +92,8 @@
    ;;             (max-cache-ttl-ssh 28800)))
 
    ;; Run user dbus session
-   ;;(service home-dbus-service-type)
+   ;; required for pipewire
+   (service home-dbus-service-type)
 
    ;; Start background jobs
    ;;   (service home-mcron-service-type

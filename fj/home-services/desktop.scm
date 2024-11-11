@@ -6,7 +6,7 @@
   #:use-module (guix gexp)
   #:export (my-home-desktop-service-type))
 
-(use-package-modules compression curl fonts freedesktop gimp glib gnome gnome-xyz
+(use-package-modules compression curl fonts fontutils freedesktop gimp glib gnome gnome-xyz
                      gstreamer kde-frameworks linux music package-management
                      password-utils pdf pulseaudio shellutils ssh syncthing video
                      web-browsers wget wm xdisorg xorg)

@@ -8,6 +8,7 @@ CFG="$ROOT/fj/systems/${HOSTNAME}.scm"
 if [ -e "$CFG" ]; then
     sudo guix system \
 	 -L "$ROOT" \
+	 -v 3 \
          --substitute-urls="$SUBS" \
          --cores=0 \
          reconfigure "$CFG"
